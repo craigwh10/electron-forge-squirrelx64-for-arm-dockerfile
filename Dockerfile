@@ -1,10 +1,7 @@
 FROM nikolaik/python-nodejs:python3.10-nodejs18
-# Python required for node-gyp.
 
 # Needed otherwise subdirectory error on make
-# https://github.com/electron-userland/electron-forge/issues/413
-# some of the comments lead to red-herrings, but I found this was an effective solution.
-WORKDIR app/usr
+WORKDIR usr/app
 
 RUN dpkg --add-architecture i386 && apt update
 #RUN apt install qemu
@@ -30,6 +27,8 @@ RUN echo "deb https://download.mono-project.com/repo/debian stable-buster main" 
 RUN apt update
 RUN apt install -y mono-devel
 
+RUN node --version
+RUN npm --version
 # Ensuring we have node-gyp as it's required for make
 RUN npm install --global node-gyp
 RUN node-gyp --version
@@ -44,12 +43,16 @@ RUN git --version
 
 RUN apt install -y lldb
 # lldb better option over gdb, ptrace not supported for qemu images
+# lldb is a trace logging solution for debugging, built for llvm.
 # error: https://stackoverflow.com/questions/42029834/gdb-in-docker-container-returns-ptrace-operation-not-permitted
+# --cap-add=SYS_PTRACE only works on run not build.
 
-# Copies into WORKDIR
-COPY . .
-
+# https://stackoverflow.com/questions/35774714/how-to-cache-the-run-npm-install-instruction-when-docker-build-a-dockerfile
+COPY package.json /usr/app/package.json
 RUN npm install --platform=win32
+# Copies into WORKDIR
+COPY . /usr/app
+
 
 # Ensuring wine64 is used as wine32 is default
 # "make:windows": "electron-forge make --platform=win32 --arch=x64"
