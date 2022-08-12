@@ -1,6 +1,9 @@
 FROM nikolaik/python-nodejs:python3.10-nodejs18
+# Python required for node-gyp.
 
 # Needed otherwise subdirectory error on make
+# https://github.com/electron-userland/electron-forge/issues/413
+# some of the comments lead to red-herrings, but I found this was an effective solution.
 WORKDIR app/usr
 
 RUN dpkg --add-architecture i386 && apt update
@@ -27,17 +30,6 @@ RUN echo "deb https://download.mono-project.com/repo/debian stable-buster main" 
 RUN apt update
 RUN apt install -y mono-devel
 
-# https://stackoverflow.com/questions/36399848/install-node-in-dockerfile
-ENV NODE_VERSION=18.0.0
-RUN apt install -y curl
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-RUN node --version
-RUN npm --version
 # Ensuring we have node-gyp as it's required for make
 RUN npm install --global node-gyp
 RUN node-gyp --version
@@ -53,7 +45,6 @@ RUN git --version
 RUN apt install -y lldb
 # lldb better option over gdb, ptrace not supported for qemu images
 # error: https://stackoverflow.com/questions/42029834/gdb-in-docker-container-returns-ptrace-operation-not-permitted
-# --cap-add=SYS_PTRACE
 
 # Copies into WORKDIR
 COPY . .
