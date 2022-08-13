@@ -7,12 +7,12 @@ Process takes around 15 minutes on my m1 pro 2021, approx 400 secs on npm i for 
 
 ## Issues being resolved
 
-[ ] Can't see dist in container, figuring out how to get npm stdout to show in logs so I can see if there's an issue - getting node-gyp stdout only with 0 exit status which means a non-abnormal close in linux, doesn't seem to be failing just dist isn't showing.
+- [ ] Can't see dist in container, figuring out how to get npm stdout to show in logs so I can see if there's an issue - getting node-gyp stdout only with 0 exit status which means a non-abnormal close in linux, doesn't seem to be failing just dist isn't showing.
 
 ## Possible improvements
 
-[x] Caching node_modules after checking for possible cause-of-change in dependencies
-[ ] Version fixing for dependencies with security tests
+- [x] Caching node_modules after checking for possible cause-of-change in dependencies
+- [ ] Version fixing for dependencies with security tests
 
 ## Leftover useful bits for reference
 
