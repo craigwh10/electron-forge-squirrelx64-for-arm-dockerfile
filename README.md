@@ -31,3 +31,8 @@ RUN apt install -y
 
 - Version checks are necessary as a sanity check that the binaries are there.
 - apt update prior to installs is necessary to ensure we aren't missing packages.
+
+Logging build (adds logfile to image)
+```
+RUN QEMU_STRACE=1 WINEARCH=win64 WINEPREFIX=~/.wine64 npm run make:windows > build.log 2>&1
+```
