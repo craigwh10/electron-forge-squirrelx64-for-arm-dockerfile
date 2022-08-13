@@ -53,7 +53,6 @@ RUN npm install --platform=win32
 # Copies into WORKDIR
 COPY . /usr/app
 
-
 # Ensuring wine64 is used as wine32 is default
 # "make:windows": "electron-forge make --platform=win32 --arch=x64"
-RUN WINEARCH=win64 WINEPREFIX=~/.wine64 npm run make:windows
+ENTRYPOINT DEBUG="electron-windows-installer*,electron-forge:*" QEMU_STRACE=1 WINEARCH=win64 WINEPREFIX=~/.wine64 npm run make:windows
